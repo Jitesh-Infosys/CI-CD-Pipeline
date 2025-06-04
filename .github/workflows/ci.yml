@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Use a Linux runner for faster execution
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Action to check out your repository code
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' # Specify the Python version you are using (e.g., 3.9, 3.10, 3.11, 3.12)
+        cache: 'pip' # Cache pip dependencies for faster builds
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install dependencies from requirements.txt
+        pip install -r requirements.txt
+
+    - name: Ensure Python Package Structure (__init__.py)
+      # This step ensures that 'app' and 'tests' directories are treated as Python packages.
+      # It's best practice to commit empty __init__.py files to your repo,
+      # but this step acts as a safeguard in the CI environment.
+      run: |
+        mkdir -p app # Ensure app directory exists
+        touch app/__init__.py # Create __init__.py inside app
+        mkdir -p tests # Ensure tests directory exists
+        touch tests/__init__.py # Create __init__.py inside tests
+
+    - name: Configure Pylint (if .pylintrc exists in root)
+      # Pylint will automatically look for .pylintrc in the current directory or parent directories.
+      # If you have a custom .pylintrc, ensure it's committed to your repo's root.
+      run: |
+        if [ -f .pylintrc ]; then
+          echo "Found .pylintrc, Pylint will use it."
+        else
+          echo "No .pylintrc found. Pylint will use default configuration."
+          # Optional: Generate a default .pylintrc if you want to customize it in CI
+          # pylint --generate-rcfile > .pylintrc
+        fi
+
+    - name: Run Pylint on Flask App (app/main.py)
+      # Pylint checks for code quality and style.
+      # Adjust the path if your main Flask app file is not at app/main.py
+      run: pylint app/main.py
+      # Optional: Add --fail-under to enforce a minimum Pylint score, e.g., --fail-under=9.0
+
+    - name: Run Pylint on Locustfile (locustfile.py)
+      # Pylint checks for code quality and style of your Locust script.
+      run: pylint locustfile.py
+      # Optional: Add --fail-under to enforce a minimum Pylint score
+
+    - name: Run Unit Tests
+      # Execute your unit tests.
+      # The 'python -m unittest' command correctly handles package imports.
+      run: python -m unittest tests.test_main
+
+    - name: Final CI Check
+      run: echo "CI/CD pipeline completed successfully!"

@@ -1,0 +1,5 @@
+flask
+locust
+pytest
+coverage
+pylint 
