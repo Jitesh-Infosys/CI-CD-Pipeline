@@ -136,3 +136,4 @@ class WebsiteUser(HttpUser):
         """
         # W1309: Using an f-string that does not have any interpolated variables
         print("User stopped.")
+
