@@ -32,3 +32,17 @@ This Flask API provides standard CRUD (Create, Read, Update, Delete) operations 
 ## Project Structure
 
 The project is organized as follows:
+CI-CD-Pipeline/
+├── .github/                  # GitHub Actions workflow configurations
+│   └── workflows/
+│       └── ci.yml            # CI/CD pipeline definition (see Section 5)
+├── app/                      # Contains the main Flask application
+│   ├── __init__.py           # IMPORTANT: This must be an empty file!
+│   └── main.py               # Your core Flask API application
+├── tests/                    # Contains unit tests for the Flask API
+│   ├── __init__.py           # IMPORTANT: This must be an empty file!
+│   └── test_main.py          # Your unit tests (see Section 3)
+├── locustfile.py             # Locust script for load testing the API
+├── requirements.txt          # Python dependencies
+├── .pylintrc                 # Pylint configuration file (see Section 4)
+└── README.md                 # Your project's README (see Section 6)
