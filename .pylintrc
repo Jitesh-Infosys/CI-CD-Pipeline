@@ -6,6 +6,7 @@
 # Add 'global-statement' (W0603) because it's used for the simple in-memory store.
 disable=
     global-statement,
+    C0305
     # C0114, # missing-module-docstring (Uncomment if you don't want to add docstrings)
     # C0115, # missing-class-docstring
     # C0116, # missing-function-docstring
